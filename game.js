@@ -34,4 +34,13 @@ $(".btn").click(function() {
     let userChosenColor = $(this).attr("id");
     userClickedPattern.push(userChosenColor);
     playSound(userChosenColor);
+    animatePress(userChosenColor);
 });
+
+function animatePress(currentColor) {
+    let $currentColorElement = $("#"+currentColor);
+    $currentColorElement.toggleClass("pressed");
+    setTimeout(function() {
+        $currentColorElement.toggleClass("pressed");
+    }, 100)
+}
