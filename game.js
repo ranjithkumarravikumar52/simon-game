@@ -2,13 +2,9 @@ var buttonColors = [
     "red", "blue", "green", "yellow"
 ];
 
-var gamePattern = [
+var gamePattern = [];
 
-];
-
-var userClickedPattern = [
-
-];
+var userClickedPattern = [];
 
 var level = 0;
 
@@ -17,20 +13,19 @@ var level = 0;
  * 1. push the id to userClickedPattern
  * 2. when clicks reached to gamePattern then check game logic
  */
-$(".btn").click(function() {
+$(".btn").click(function () {
     let userChosenColor = $(this).attr("id");
     userClickedPattern.push(userChosenColor);
     playSound(userChosenColor);
     animatePress(userChosenColor);
-    if(userClickedPattern.length === gamePattern.length) {
-       if(checkLogic()) {
-           console.log("Round Won");
-           userClickedPattern = [];
-           nextSequence();
-       } else {
-           console.log("Round Lost");
-           gameOver();
-       }
+    //every time the button is clicked, check the logic
+    var isSequenceCorrect = checkLogic();
+    if(isSequenceCorrect) {
+        if(userClickedPattern.length === gamePattern.length) {
+            nextSequence();
+        }
+    } else {
+        gameOver();
     }
 });
 
@@ -51,21 +46,22 @@ function playSound(randomChosenColor) {
 }
 
 function nextSequence() {
+    userClickedPattern = [];
     var randomNumber = Math.floor(Math.random() * 4);
     var randomChosenColor = buttonColors[randomNumber];
     gamePattern.push(randomChosenColor);
 
-    let $selectedColorElement = $("#"+randomChosenColor);
+    let $selectedColorElement = $("#" + randomChosenColor);
     $selectedColorElement.fadeOut(250).fadeIn(250);
     playSound(randomChosenColor);
     level++;
-    $("#level-title").text("Level "+ level);
+    $("#level-title").text("Level " + level);
 }
 
 function animatePress(currentColor) {
-    let $currentColorElement = $("#"+currentColor);
+    let $currentColorElement = $("#" + currentColor);
     $currentColorElement.toggleClass("pressed");
-    setTimeout(function() {
+    setTimeout(function () {
         $currentColorElement.toggleClass("pressed");
     }, 100)
 }
@@ -75,7 +71,7 @@ function checkLogic() {
     console.log('gamePattern ==', gamePattern);
     console.log('userClickedPattern ==', userClickedPattern);
 
-    for (var i = 0; i < gamePattern.length; i++) {
+    for (var i = 0; i < userClickedPattern.length; i++) {
         if (gamePattern[i] !== userClickedPattern[i]) {
             return false;
         }
@@ -87,7 +83,7 @@ function checkLogic() {
 function gameOver() {
     $("#level-title").text("Game Over! Press any key to continue");
     $("body").toggleClass("game-over");
-    setTimeout(function() {
+    setTimeout(function () {
         $("body").toggleClass("game-over");
     }, 200);
     playSound("wrong");
